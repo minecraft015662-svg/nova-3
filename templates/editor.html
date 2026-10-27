@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block content %}
+<div class="page-head"><div><div class="eyebrow">NOVA STUDIO</div><h1>Theme <span>editor.</span></h1><p class="muted">Customize your theme. Preview updates live; Save stores settings for the next installer download.</p></div><span class="status active">DRAFT</span></div>
+<div class="editor-grid"><form method="post" class="editor-controls">
+<div class="control-group"><h3>Color system</h3><label>Accent color <input type="color" name="accent" value="{{ settings.accent }}"></label><label>Background <input type="color" name="background" value="{{ settings.background }}"></label></div>
+<div class="control-group"><h3>Components</h3><label>Card corner radius <output id="radius-value">{{ settings.radius }}px</output><input type="range" min="0" max="28" name="radius" value="{{ settings.radius }}" oninput="document.getElementById('radius-value').value=this.value+'px'"></label>
+<label class="check"><input type="checkbox" name="glow" {% if settings.glow %}checked{% endif %}> Accent glow</label>
+<label class="check"><input type="checkbox" name="animations" {% if settings.animations %}checked{% endif %}> Hover animations</label>
+<label>Cursor style<select name="cursor"><option value="default" {% if settings.cursor=='default' %}selected{% endif %}>Default</option><option value="pointer" {% if settings.cursor=='pointer' %}selected{% endif %}>Pointer</option><option value="crosshair" {% if settings.cursor=='crosshair' %}selected{% endif %}>Crosshair</option></select></label></div>
+<button class="btn primary full">Save theme settings</button></form>
+<div class="preview-wrap"><div class="preview-label">LIVE PREVIEW <span>SIMULATED PANEL</span></div><div id="live-preview" class="live-preview" style="--p-accent:{{ settings.accent }};--p-bg:{{ settings.background }};--p-radius:{{ settings.radius }}px;--p-glow:{% if settings.glow %}0 0 24px {{ settings.accent }}55{% else %}none{% endif %};cursor:{{ settings.cursor }}">
+<div class="pv-side"><div class="pv-brand"><i>N</i> NOVA</div><div class="pv-nav active">◈ Overview</div><div class="pv-nav">▣ Console</div><div class="pv-nav">▤ Files</div><div class="pv-nav">⚙ Settings</div></div><div class="pv-body"><small>SERVER MANAGEMENT / OVERVIEW</small><h2>Your servers</h2><div class="pv-card"><span class="online">● ONLINE</span><h3>Survival Network</h3><p>Memory usage · 42%</p><div class="pv-meter"><i></i></div><button type="button">Manage server ↗</button></div><div class="pv-card"><span class="online">● ONLINE</span><h3>Proxy Node</h3><p>CPU usage · 18%</p><div class="pv-meter"><i style="width:18%"></i></div><button type="button">Manage server ↗</button></div></div></div></div></div>
+<script>
+const form=document.querySelector('.editor-controls'), preview=document.getElementById('live-preview');
+function updatePreview(){const d=new FormData(form); preview.style.setProperty('--p-accent',d.get('accent'));preview.style.setProperty('--p-bg',d.get('background'));preview.style.setProperty('--p-radius',(d.get('radius')||14)+'px');preview.style.setProperty('--p-glow',d.has('glow')?'0 0 24px '+d.get('accent')+'55':'none');preview.style.cursor=d.get('cursor');preview.classList.toggle('no-motion',!d.has('animations'));}
+form.addEventListener('input',updatePreview);
+</script>
+{% endblock %}

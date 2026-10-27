@@ -1,0 +1,13 @@
+info:
+  name: 'NOVA THEME'
+  identifier: 'novatheme'
+  description: 'NOVA THEME red edition: customer-configurable styling.'
+  version: '1.0.0'
+  target: 'beta-2026-01'
+  author: 'NOVA THEME'
+  website: 'https://example.com'
+admin:
+  view: 'views/admin.blade.php'
+  css: 'assets/admin.css'
+dashboard:
+  css: 'assets/dashboard.css'

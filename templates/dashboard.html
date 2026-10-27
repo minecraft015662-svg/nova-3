@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block content %}
+<div class="page-head"><div><div class="eyebrow">CUSTOMER PORTAL</div><h1>Welcome to <span>NOVA.</span></h1><p class="muted">{{ me['email'] }}</p></div><a class="btn primary" href="{{ url_for('editor') }}">Open theme editor ↗</a></div>
+<div class="stats"><div class="stat"><small>LICENSES</small><b>{{ licenses|length }}</b></div><div class="stat"><small>ACCENT COLOR</small><b><span class="swatch" style="background:{{ settings.accent }}"></span>{{ settings.accent }}</b></div><div class="stat"><small>EMAIL STATUS</small><b class="good">✓ Verified</b></div></div>
+<section class="section-head"><h2>Your licenses</h2><p class="muted">Contact your NOVA administrator if you need a new license.</p></section>
+<div class="license-list">{% for l in licenses %}<article class="license-row"><div><b>NOVA-••••-••••-{{ l.key_hint }}</b><p class="muted">{{ l.bound_domain or 'Not activated yet' }}</p></div><span class="status {{ l.status }}">{{ l.status }}</span><small>Expires: {{ l.expires_at[:10] if l.expires_at else 'Never' }}</small></article>{% else %}<div class="empty">No licenses assigned to your account yet.</div>{% endfor %}</div>
+
+<section class="section-head"><h2>Bot API keys</h2><p class="muted">Create a secret key for your bot or integration to call the NOVA API. Store it in an environment variable; never share it publicly.</p></section>
+{% if new_api_key %}<div class="new-key"><b>Copy your API key now — it is shown only once.</b><code id="new-api-key">{{ new_api_key }}</code><button type="button" class="btn ghost" onclick="navigator.clipboard.writeText(document.getElementById('new-api-key').textContent)">Copy key</button></div>{% endif %}
+<div class="panel">
+<form method="post" action="{{ url_for('create_api_key') }}" class="api-key-form"><label>Key name<input name="name" required maxlength="60" placeholder="My Discord Bot"></label><button class="btn primary">Create API key</button></form>
+<div class="table-wrap"><table><thead><tr><th>Name</th><th>Prefix</th><th>Status</th><th>Last used</th><th>Action</th></tr></thead><tbody>{% for k in api_keys %}<tr><td>{{ k.name }}</td><td>{{ k.key_prefix }}…</td><td><span class="status {{ k.status }}">{{ k.status }}</span></td><td>{{ k.last_used_at[:19] if k.last_used_at else 'Never' }}</td><td>{% if k.status == 'active' %}<form method="post" action="{{ url_for('revoke_api_key',key_id=k.id) }}" onsubmit="return confirm('Revoke this API key?')"><button class="tiny danger">Revoke</button></form>{% else %}—{% endif %}</td></tr>{% else %}<tr><td colspan="5">No API keys created.</td></tr>{% endfor %}</tbody></table></div>
+</div>
+<div class="notice">API examples: <code>GET /api/v1/me</code> returns your account/license status, and <code>GET /api/v1/theme</code> returns saved theme settings. Send <code>Authorization: Bearer YOUR_API_KEY</code>. These keys authenticate integrations to NOVA; they do not provide VPS or Discord bot hosting by themselves.</div>
+
+<div class="notice">Theme changes apply to newly generated installer packages. For an already installed theme, generate a fresh package and reinstall/update it after backing up your panel.</div>
+{% endblock %}
